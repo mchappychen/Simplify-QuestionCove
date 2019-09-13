@@ -1,4 +1,10 @@
 # Simplify-QuestionCove
+
+This is a script for the chrome tampermonkey extension
+
+After you install tampermonkey, press the "RAW" button on the top-right of this webpage.
+
+This script:
 1. Hides SS scores
 2. Removes Question Posts by Users with 0 SS
 3. Hides Medals
