@@ -9,3 +9,6 @@ This script:
 2. Removes Question Posts by Users with 0 SS
 3. Hides Medals
 4. Hides some Avatars
+
+Possible Future Features:
+1. Button that collapse responses (cause you can't delete other people's posts)
