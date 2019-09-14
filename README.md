@@ -10,7 +10,7 @@ This script:
 3. Hides Medals
 4. Hides some Avatars
 
-[https://i.imgur.com/okvt2PW.png](https://i.imgur.com/okvt2PW.png)
+![https://i.imgur.com/okvt2PW.png](https://i.imgur.com/okvt2PW.png)
 
 Possible Future Features:
 1. Button that collapse responses (cause you can't delete other people's posts)
