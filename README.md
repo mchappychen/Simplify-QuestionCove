@@ -16,4 +16,5 @@ Possible Future Features:
 1. Button that collapse responses (cause you can't delete other people's posts)
 
 Proof of mod approval (as required by QC rules)
+
 ![https://i.imgur.com/tXTJr5g.png](https://i.imgur.com/tXTJr5g.png)
