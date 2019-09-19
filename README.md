@@ -9,11 +9,9 @@ This script:
 2. Removes Question Posts by Users with 0 SS
 3. Hides Medals
 4. Hides some Avatars
+5. Adds a 'Collapse' button to hide replies to a post
 
 ![https://i.imgur.com/okvt2PW.png](https://i.imgur.com/okvt2PW.png)
-
-Possible Future Features:
-1. Button that collapse responses (cause you can't delete other people's posts)
 
 Proof of mod approval (as required by QC rules)
 
