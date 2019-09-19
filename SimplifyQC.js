@@ -1,15 +1,15 @@
 // ==UserScript==
-// @name         Simplifies QuestionCove
+// @name         Simplify QuestionCove
 // @namespace    http://tampermonkey.net/
-// @version      3.0
-// @description  Makes QuestionCove more minimalistic
+// @version      4.0
+// @description  Make question cove simpler
 // @author       mhchen
 // @match        https://questioncove.com/*
 // @grant        none
 // ==/UserScript==
 
 /*
-qc.userById('mhchen') just so I remember this exists
+qc.userById('mhchen')
 */
 (function() {
     'use strict';
@@ -28,7 +28,30 @@ qc.userById('mhchen') just so I remember this exists
         for (let i=0;i<postStatuses.length;i++){
             postStatuses[i].parentNode.removeChild(postStatuses[i]);
         }
-        setTimeout(simplifyPosts,1000);
+
+        /* REMOVE AUTHOR NAME FROM POSTS */
+        let tier1Names = document.getElementsByClassName('username user-link colon-suffixed tier-1');
+        let tier2Names = document.getElementsByClassName('username user-link colon-suffixed tier-2');
+        let tier3Names = document.getElementsByClassName('username user-link colon-suffixed tier-3');
+        let tier4Names = document.getElementsByClassName('username user-link colon-suffixed tier-4');
+        let tier5Names = document.getElementsByClassName('username user-link colon-suffixed tier-5');
+        for(let i=0;i<tier1Names.length;i++){
+                tier1Names[i].style.display = "none";
+        }
+        for(let i=0;i<tier2Names.length;i++){
+                tier2Names[i].style.display = "none";
+        }
+        for(let i=0;i<tier3Names.length;i++){
+                tier3Names[i].style.display = "none";
+        }
+        for(let i=0;i<tier4Names.length;i++){
+                tier4Names[i].style.display = "none";
+        }
+        for(let i=0;i<tier5Names.length;i++){
+                tier5Names[i].style.display = "none";
+        }
+
+        setTimeout(simplifyPosts,200);
     }
 
         /* REMOVE SS SCORES FROM EVERYWHERE */
@@ -77,7 +100,7 @@ qc.userById('mhchen') just so I remember this exists
                 }
             }
         }
-        setTimeout(deleteSS,1000);
+        setTimeout(deleteSS,200);
     }
 
     /* REMOVE MEDALS */
@@ -94,7 +117,7 @@ qc.userById('mhchen') just so I remember this exists
                 medals[i].parentNode.removeChild(medals[i]);
             }
         }
-        setTimeout(removeMedals,800);
+        setTimeout(removeMedals,200);
     }
 
     /* REMOVE POSTS WITH SS SCORE OF 0 */
@@ -112,7 +135,7 @@ qc.userById('mhchen') just so I remember this exists
                 }
             }
         }
-        setTimeout(removeSpam,500);
+        setTimeout(removeSpam,200);
     }
 
 
@@ -123,17 +146,27 @@ qc.userById('mhchen') just so I remember this exists
                     setTimeout(simplifyPosts,100);
                 }
             } else {
-               setTimeout(start,700);
+               setTimeout(start,200);
             }
         } else {
-           setTimeout(start,700);
+           setTimeout(start,200);
         }
     }
 
+    function collapseButton(){
+        let replies = document.getElementsByClassName('replies')[0].children;
+        for(let i=0;i<replies.length;i++){
+            if(replies[i].innerHTML.substring(0,7) != "<button"){
+                replies[i].innerHTML = "<button onclick=\"this.parentNode.style.display=\'none\'\"> Collapse</button>" + replies[i].innerHTML;
+            }
+        }
+        setTimeout(collapseButton,2000);
+    }
 
     setTimeout(removeSpam,400);
     setTimeout(start,400);
     setTimeout(deleteSS,500);
     setTimeout(removeMedals,200);
+    setTimeout(collapseButton,3000);
 
 })();
