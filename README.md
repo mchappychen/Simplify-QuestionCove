@@ -10,6 +10,7 @@ This script:
 3. Hides Medals
 4. Hides some Avatars
 5. Adds a 'Collapse' button to hide replies to a post
+6. Makes all names the same color
 
 ![https://i.imgur.com/okvt2PW.png](https://i.imgur.com/okvt2PW.png)
 
