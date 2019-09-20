@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Simplify QuestionCove
 // @namespace    http://tampermonkey.net/
-// @version      4.1
+// @version      5.0
 // @description  Make question cove simpler
 // @author       mhchen
 // @match        https://questioncove.com/*
@@ -167,10 +167,20 @@ qc.userById('mhchen')
         setTimeout(collapseButton,2000);
     }
 
+    function setSameUsernameColor(){
+        for(let i=0;i< document.getElementsByClassName('user-link username').length;i++){
+            if(document.getElementsByClassName('user-link username')[i].style.display != "none"){
+                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:darkorange!important;');
+            }
+        }
+        setTimeout(setSameUsernameColor,1000);
+    }
+
+
     setTimeout(removeSpam,400);
     setTimeout(start,400);
     setTimeout(deleteSS,500);
     setTimeout(removeMedals,200);
     setTimeout(collapseButton,3000);
-
+    setTimeout(setSameUsernameColor,1000);
 })();
