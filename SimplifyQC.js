@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Simplify QuestionCove
 // @namespace    http://tampermonkey.net/
-// @version      4.0
+// @version      4.1
 // @description  Make question cove simpler
 // @author       mhchen
 // @match        https://questioncove.com/*
@@ -156,8 +156,12 @@ qc.userById('mhchen')
     function collapseButton(){
         let replies = document.getElementsByClassName('replies')[0].children;
         for(let i=0;i<replies.length;i++){
-            if(replies[i].innerHTML.substring(0,7) != "<button"){
-                replies[i].innerHTML = "<button onclick=\"this.parentNode.style.display=\'none\'\"> Collapse</button>" + replies[i].innerHTML;
+            let button = document.createElement("button");
+            button.innerText = "Collapse"
+            button.setAttribute('onclick','this.parentNode.parentNode.parentNode.style.display="none"');
+            button.setAttribute('style','float:right;padding:5px 10px;margin-right:15px;border-radius:10px;');
+            if(!replies[i].innerHTML.contains("this.parentNode.parentNode")){
+                replies[i].children[1].children[4].appendChild(button);
             }
         }
         setTimeout(collapseButton,2000);
