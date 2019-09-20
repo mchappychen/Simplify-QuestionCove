@@ -1,10 +1,18 @@
 # Simplify-QuestionCove
 
-This is a script for the chrome tampermonkey extension
+How to install:
+1. Get the tampermonkey extension (this extension runs your own javascript on websites)
+2. Click on simplifyQC.js
+3. Click on the 'RAW' button top-right
+4. Press Install
+5. Go to QC and see if it changes
 
-After you install tampermonkey, press the "RAW" button on the top-right of this webpage.
 
-This script:
+How to uninstall:
+1. Uninstall tampermonkey
+
+
+Features:
 1. Hides SS scores
 2. Removes Question Posts by Users with 0 SS
 3. Hides Medals
