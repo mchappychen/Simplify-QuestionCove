@@ -159,7 +159,7 @@ qc.userById('mhchen')
             let button = document.createElement("button");
             button.innerText = "Collapse"
             button.setAttribute('onclick','this.parentNode.parentNode.parentNode.style.display="none"');
-            button.setAttribute('style','float:right;padding:5px 10px;margin-right:15px;border-radius:10px;');
+            button.setAttribute('style','float:right;padding:6px 25px;margin-right:5px;border-radius:10px;');
             if(!replies[i].innerHTML.contains("this.parentNode.parentNode")){
                 replies[i].children[1].children[4].appendChild(button);
             }
@@ -176,6 +176,8 @@ qc.userById('mhchen')
         setTimeout(setSameUsernameColor,1000);
     }
 
+    document.getElementById('header-container').style.position = "absolute";
+    document.getElementById('header-container').style.backgroundColor = "";
 
     setTimeout(removeSpam,400);
     setTimeout(start,400);
