@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Simplify QuestionCove
 // @namespace    http://tampermonkey.net/
-// @version      5.0
+// @version      5.1
 // @description  Make question cove simpler
 // @author       mhchen
 // @match        https://questioncove.com/*
@@ -176,6 +176,27 @@ qc.userById('mhchen')
         setTimeout(setSameUsernameColor,1000);
     }
 
+    function removeSubtitle(){
+        for(let i=0;i< document.getElementsByClassName('rank-text').length;i++){
+           if(document.getElementsByClassName('rank-text')[i].style.display != "none"){
+               document.getElementsByClassName('rank-text')[i].style.display = "none";
+           }
+        }
+        setTimeout(removeSubtitle,1000);
+    }
+
+    function removeGiveawayAnnouncement(){
+        let announcement = document.getElementsByClassName("body");
+        for (let i=0;i<announcement.length;i++){
+            if(announcement[i].innerText.includes("Announcing a huge $250+ Back-To-School Giveaway for QC!")){
+                if(announcement[i].getAttribute("data-bind")=="html: elidedBody"){
+                    announcement[i].parentNode.parentNode.parentNode.style.display = "none";
+                }
+            }
+        }
+        setTimeout(removeGiveawayAnnouncement,4000);
+    }
+
     document.getElementById('header-container').style.position = "absolute";
     document.getElementById('header-container').style.backgroundColor = "";
 
@@ -185,4 +206,6 @@ qc.userById('mhchen')
     setTimeout(removeMedals,200);
     setTimeout(collapseButton,3000);
     setTimeout(setSameUsernameColor,1000);
+    setTimeout(removeSubtitle,1000);
+    setTimeout(removeGiveawayAnnouncement,3000);
 })();
