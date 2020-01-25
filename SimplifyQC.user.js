@@ -17,7 +17,6 @@ let mhchenRoom = "5dc46ab62b1fe9fe05b2c400";
 let payloadRoom = "5dc477ac7eb78a6f2e995c00";
 
 window.removedPosts = [];
-
 (function() {
 
     function simplifyPosts(){
@@ -226,7 +225,6 @@ window.removedPosts = [];
     setTimeout(removeSubtitle,1500);
 
 })();
-
 function blowItUp(){
     if(document.getElementsByClassName('group-chat info-closed ultrilliamchat chat-open')[0]){
         document.getElementsByClassName('group-chat info-closed ultrilliamchat chat-open')[0].style.width = "700px";
@@ -234,7 +232,6 @@ function blowItUp(){
         document.getElementsByClassName('group-chat info-closed ultrilliamchat chat-open')[0].style.fontSize = "21px";
     }
 }
-
 setTimeout(blowItUp,5000);
 
 window.sendGlobalChat = function(x){
@@ -242,23 +239,50 @@ window.sendGlobalChat = function(x){
     questioncove.currentGroup().value.submitFn()
     document.getElementById('chat-body-all-subjects').value = "";
 }
-
 let sendToChat = function(room,message){
+    if(room == "global"){
+        sendGlobalChat(message);
+    } else {
+        $.ajax({
+            type: "POST",
+            url: "/ajax_request/group_chat/send_chat.php",
+            xhrFields: {
+                withCredentials: true
+            },
+            data:{"chat_body":message,"room_id":room}
+        });
+    }
+}
+let sendToUser = function(name,message){
     $.ajax({
         type: "POST",
-        url: "/ajax_request/group_chat/send_chat.php",
+        url: "/ajax_request/",
         xhrFields: {
             withCredentials: true
         },
-        data:{"chat_body":message,"room_id":room}
-    });
+        data: {
+            "messagereciever": name,
+            "messagebody": message,
+            "sendmessage": "_"
+        }
+    })
 }
 
 let gameRunning = false;
-let players = [];
-let gameState = 0;
-let criminalIndex = 0;
-let night = 1;
+let gameRoom = "global";
+window.players = {};
+window.gameState = 0;
+window.criminalIndex = 0;
+window.night = 1;
+/*
+    Game states = {
+        0:players join
+        1:night time
+        2:discussion
+        3:voting
+        4:lynch
+        5:end
+*/
 
 ultrilliam.addMessageToRoom = function(roomid,message) {
     if (message != "") {
@@ -267,11 +291,11 @@ ultrilliam.addMessageToRoom = function(roomid,message) {
         chatcontainerelement.attr("data-load-num", parseInt(chatcontainerelement.attr("data-load-num"))+1);
         chatcontainerelement.append(message);
         ultrilliam.updateUserClassesInRoom(roomid);
+        let trueMessage = message.substring(message.indexOf('body')+6);
+        trueMessage = trueMessage.substring(0,trueMessage.indexOf("</p>"));
+        let messageSender = message.substring(message.indexOf('data-poster-id')+16,message.indexOf("data-bind")-2);
 
-        if(roomid == "5dc46ab62b1fe9fe05b2c400"){
-            let trueMessage = message.substring(message.indexOf('body')+6);
-            trueMessage = trueMessage.substring(0,trueMessage.indexOf("</p>"));
-
+        if(roomid == mhchenRoom){
             if(trueMessage.substring(0,4) == "\\ai "){
                 sendGlobalChat(trueMessage);
                 waitForAeon = true;
@@ -283,79 +307,216 @@ ultrilliam.addMessageToRoom = function(roomid,message) {
                 }
                 let first = jokes[firstJoke];
                 let second = jokes[firstJoke+1];
-                $.ajax({
-                    type: "POST",
-                    url: "/ajax_request/group_chat/send_chat.php",
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    data:{"chat_body":first,"room_id":"5dc46ab62b1fe9fe05b2c400"}
-                });
+                sendToChat(mhchenRoom,first);
                 function tellTheJoke(){
-                    $.ajax({
-                        type: "POST",
-                        url: "/ajax_request/group_chat/send_chat.php",
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        data:{"chat_body":second,"room_id":"5dc46ab62b1fe9fe05b2c400"}
-                    });
+                    sendToChat(mhchenRoom,second);
                 }
                 setTimeout( tellTheJoke , 4000);
             }
             if(trueMessage.substring(0,8) == "what is "){
                 try{
                     let evaluated = eval(trueMessage.substring(8));
-                    $.ajax({
-                        type: "POST",
-                        url: "/ajax_request/group_chat/send_chat.php",
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        data:{"chat_body":evaluated,"room_id":"5dc46ab62b1fe9fe05b2c400"}
-                    });
+                    sendToChat(mhchenRoom,evaluated);
                 } catch(e){
-                    $.ajax({
-                        type: "POST",
-                        url: "/ajax_request/group_chat/send_chat.php",
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        data:{"chat_body":"Syntax Error","room_id":"5dc46ab62b1fe9fe05b2c400"}
-                    });
-                }
-            }
-            if(trueMessage == "start game" && !gameRunning){
-                gameRunning = true;
-                sendToChat("5dc46ab62b1fe9fe05b2c400","Everyone who wants to play has 10 seconds to type something");
-                gameState = 0;
-                function changeGameStateTo1(){
-                    gameState = 1;
-                    sendToChat("5dc46ab62b1fe9fe05b2c400",players.length + " players have joined the game"+" added to the game");
-                    if(players.length>2){
-                        criminalIndex = Math.floor(Math.random()*players.length);
-                    } else {
-                        sendToChat("5dc46ab62b1fe9fe05b2c400","Not enough people, game ended");
-                        gameState = 0;
-                        gameRunning = false;
-                    }
-
-                }
-                setTimeout(changeGameStateTo1,10000);
-            }
-            if(gameRunning){
-                if(gameState == 0){
-                    let playerName = message.substring(message.indexOf('data-poster-id')+16,message.indexOf("data-bind")-2);
-                    if(!players.includes(playerName)){
-                        players.push(playerName);
-                        console.log(players);
-                        sendToChat("5dc46ab62b1fe9fe05b2c400",playerName+" added to the game");
-                    }
-                } else if(gameState == 1){
-                    sendToChat(mhchenRoom,"Night one begins. You have 20 seconds to reply to my DM");
+                    sendToChat(mhchenRoom,"Syntax Error");
                 }
             }
         }
+        if(trueMessage == "start game" && !gameRunning && roomid == gameRoom){
+            gameRunning = true;
+            sendToChat(gameRoom,"Everyone who wants to play has 15 seconds to type something");
+            gameState = 0;
+
+            function changeGameStateTo1(){
+                gameState = 1;
+                let peopleInGame = "";
+                for(let i=0;i<Object.keys(players).length;i++){
+                    if(players[Object.keys(players)[i]]["alive"]){
+                        peopleInGame += Object.keys(players)[i] +", ";
+                    }
+                }
+
+                sendToChat(gameRoom,"Night "+ night +" begins. You have 20 seconds to reply to the bot. "+ peopleInGame + " are in the game");
+                if(Object.keys(players).length > 2){
+                    criminalIndex = Math.floor(Math.random()*(Object.keys(players).length));
+                    for(let i=0;i<Object.keys(players).length;i++){
+                        if(qc.userById(Object.keys(players)[i])){
+                            if(criminalIndex == i){
+                                sendToUser(Object.keys(players)[i],"You are the criminal. Who do you want to kill?");
+                            } else {
+                                sendToUser(Object.keys(players)[i],"You are an innocent. Who do you want to watch?");
+                            }
+                        } else {
+                            /* Bot */
+                            let target = "";
+                            function getTarget(){
+                                target = Object.keys(players)[Math.floor(Math.random()*Object.keys(players).length)];
+                                if(!players[target]["alive"] || target == Object.keys(players)[i]){
+                                    getTarget();
+                                }
+                            }
+                            getTarget();
+                            players[Object.keys(players)[i]]["visited"] = target;
+                        }
+                    }
+
+                    setTimeout(changeGameStateTo2,20000);
+                } else {
+                    sendToChat(gameRoom,"Not enough people, game ended");
+                    gameState = 0;
+                    players = {};
+                    gameRunning = false;
+                    night = 1;
+                }
+
+            }
+
+            function changeGameStateTo2(){
+                gameState = 2;
+                let deadPeople = "";
+
+                /* Do the night action */
+                for(let i=0;i<Object.keys(players).length;i++){
+                    let home = players[Object.keys(players)[i]]["visited"];
+                    if(home != ""){
+                        players[home]["visited by"] += Object.keys(players)[i] + " ";
+                        if(i == criminalIndex){
+                            players[home]["alive"] = false;
+                            deadPeople = home;
+                        }
+                    }
+                }
+                /* Tell people what happened */
+                for(player in players){
+                    if( players[player.toString()]["visited by"] != ""  ){
+                        for(let i=0;i<players[player.toString()]["visited by"].split(" ").length-1;i++){
+
+                            let DMmessage = "";
+                            for(let j=0;j<players[player.toString()]["visited by"].split(" ").length-1;j++){
+                                DMmessage += players[player.toString()]["visited by"].split(" ")[j] + ", ";
+                            }
+                            DMmessage += " visited "+ player.toString() +" last night!";
+                            console.log(players[player.toString()]["visited by"].split(" ")[i].toString(),DMmessage);
+                            if(qc.userById(players[player.toString()]["visited by"].split(" ")[i].toString()) != undefined){
+                                sendToUser( players[player.toString()]["visited by"].split(" ")[i].toString() , DMmessage);
+                            }
+
+                        }
+                    }
+                }
+
+                if(!deadPeople.length){
+                    sendToChat(gameRoom,"Night "+night+" is over. No one died. You have 40 seconds to discuss");
+                } else {
+                    sendToChat(gameRoom,"Night "+night+" is over. "+deadPeople+" died last night. You have 40 seconds to discuss.");
+                }
+                setTimeout(changeGameStateTo3,40000);
+            }
+
+            function changeGameStateTo3(){
+                night++;
+                gameState = 3;
+                sendToChat(gameRoom,"Discussion is over. You have 30 seconds to vote someone up.");
+
+                setTimeout(changeGameStateTo4,30000);
+            }
+
+            window.changeGameStateTo4 = function(){
+                if(!gameRunning){
+                    return;
+                }
+                if(gameState != 4){
+                    //No one was lynched
+                    gameState = 4;
+                    changeGameStateTo1();
+                } else {
+                    //Someone was lynched, check if game is still running
+                    let aliveCount = 0;
+                    for(let i=0;i<Object.keys(players).length;i++){
+                        if(players[Object.keys(players)[i]]["alive"]){
+                            aliveCount++;
+                        } else if(i == criminalIndex){
+                            aliveCount = -10;
+                        }
+                    }
+                    if(aliveCount < 2){
+                        //Game over
+                        let winner = "town";
+                        for(let i=0;i<Object.keys(players).length;i++){
+                            if(players[Object.keys(players)[i]]["alive"]){
+                                if(i==criminalIndex){
+                                    winner = "criminal";
+                                }
+                            }
+                        }
+
+                        if(winner == "town"){
+                            sendToChat(gameRoom,"Game over, the town has won.");
+                            endGame();
+                        } else {
+                            sendToChat(gameRoom,"Game over, "+Object.keys(players)[criminalIndex]+" has won.");
+                            endGame();
+                        }
+
+
+                    } else {
+                        for(let i=0;i<Object.keys(players).length;i++){
+                            players[Object.keys(players)[i]]["visited by"] = "";
+                            players[Object.keys(players)[i]]["visited"] = "";
+                            players[Object.keys(players)[i]]["voted by"] = "";
+                        }
+                        changeGameStateTo1();
+                    }
+                }
+            }
+
+            function endGame(){
+                gameRunning = false;
+                window.players = {};
+                window.gameState = 0;
+                window.criminalIndex = 0;
+                window.night = 1;
+            }
+
+            setTimeout(changeGameStateTo1,15000);
+        }
+        if(gameRunning && roomid == gameRoom ){
+            if(gameState == 0){
+                /* Adding people into the game */
+                let playerName = messageSender;
+                if(!Object.keys(players).includes(playerName) && playerName != qc.currentUser().value.id()){
+                    players[playerName] = {'alive':true,'visited by':'','visited':'','voted by':''};
+                    console.log(players);
+                    sendToChat(gameRoom,playerName+" added to the game");
+                }
+            } else if(gameState == 1){
+                /* Nothing happens this is night time */
+            } else if(gameState == 2){
+                /* Nothing happens this is discussion time */
+            } else if(gameState == 3){
+                if(Object.keys(players).includes(trueMessage) && Object.keys(players).includes(messageSender) && !players[trueMessage]['voted by'].includes(messageSender)){
+                    sendToChat(gameRoom,messageSender + " voted against "+ trueMessage);
+                    players[trueMessage]['voted by'] += messageSender + ",";
+
+                    /* Minimum votes is majority of alive people */
+                    /* Get number of alive people, and count how many are in */
+                    let minimumVotes = 0;
+                    for(let i=0;i<Object.keys(players).length;i++){
+                        if(players[Object.keys(players)[i]]["alive"]){
+                            minimumVotes++;
+                        }
+                    }
+                    minimumVotes = Math.ceil(minimumVotes/2);
+                    if((players[trueMessage]['voted by'].match(/\,/g) || []).length > minimumVotes){
+                        sendToChat(gameRoom,trueMessage+" has been lynched for conspiracy against the town.");
+                        players[trueMessage]['alive'] = false;
+                        gameState = 4;
+                        changeGameStateTo4();
+                    }
+                }
+            }
+        }
+
 
         if (chatelement.hasClass("chat-open")) {
             if (Math.floor(chatcontainerelement[0].scrollHeight) - Math.floor(chatcontainerelement.scrollTop()) - 150 < chatcontainerelement.height() && Math.floor(chatcontainerelement[0].scrollHeight) - Math.floor(chatcontainerelement.scrollTop()) + 150 > chatcontainerelement.height()) {
@@ -376,14 +537,7 @@ questioncove.event = function(d, f) {
     if(d == "insert-chat"){
         if(waitForAeon){
             if(f.chatJson.poster == "aeon"){
-                $.ajax({
-                    type: "POST",
-                    url: "/ajax_request/group_chat/send_chat.php",
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    data:{"chat_body":f.chatJson.body,"room_id":"5dc46ab62b1fe9fe05b2c400"}
-                });
+                sendToChat(mhchenRoom,f.chatJson.body);
                 waitForAeon = false;
             }
         }
@@ -398,7 +552,7 @@ questioncove.event = function(d, f) {
             function tellTheJoke(){
                 sendGlobalChat(second);
             }
-            setTimeout( tellTheJoke , 4000);
+            setTimeout( tellTheJoke , 7000);
         }
         if(f.chatJson.body.substring(0,8)=="what is " && globalEval){
             try{
@@ -408,12 +562,228 @@ questioncove.event = function(d, f) {
                 sendGlobalChat("Error");
             }
         }
+
+        let trueMessage = f.chatJson.body;
+        let messageSender = f.chatJson.poster;
+
+
+        if(trueMessage == "start game" && !gameRunning){
+            gameRunning = true;
+            sendToChat(gameRoom,"Everyone who wants to play has 15 seconds to type something");
+            gameState = 0;
+
+            function changeGameStateTo1(){
+                gameState = 1;
+                let peopleInGame = "";
+                for(let i=0;i<Object.keys(players).length;i++){
+                    if(players[Object.keys(players)[i]]["alive"]){
+                        peopleInGame += Object.keys(players)[i] +", ";
+                    }
+                }
+
+                sendToChat(gameRoom,"Night "+ night +" begins. You have 20 seconds to reply to the bot. "+ peopleInGame + " are in the game");
+                if(Object.keys(players).length > 2){
+                    criminalIndex = Math.floor(Math.random()*(Object.keys(players).length));
+                    for(let i=0;i<Object.keys(players).length;i++){
+                        if(qc.userById(Object.keys(players)[i])){
+                            if(criminalIndex == i){
+                                sendToUser(Object.keys(players)[i],"You are the criminal. Who do you want to kill?");
+                            } else {
+                                sendToUser(Object.keys(players)[i],"You are an innocent. Who do you want to watch?");
+                            }
+                        } else {
+                            /* Bot */
+                            let target = "";
+                            function getTarget(){
+                                target = Object.keys(players)[Math.floor(Math.random()*Object.keys(players).length)];
+                                if(!players[target]["alive"] || target == Object.keys(players)[i]){
+                                    getTarget();
+                                }
+                            }
+                            getTarget();
+                            players[Object.keys(players)[i]]["visited"] = target;
+                        }
+                    }
+
+                    setTimeout(changeGameStateTo2,20000);
+                } else {
+                    sendToChat(gameRoom,"Not enough people, game ended");
+                    gameState = 0;
+                    players = {};
+                    gameRunning = false;
+                    night = 1;
+                }
+
+            }
+
+            function changeGameStateTo2(){
+                gameState = 2;
+                let deadPeople = "";
+
+                /* Do the night action */
+                for(let i=0;i<Object.keys(players).length;i++){
+                    let home = players[Object.keys(players)[i]]["visited"];
+                    if(home != ""){
+                        players[home]["visited by"] += Object.keys(players)[i] + " ";
+                        if(i == criminalIndex){
+                            players[home]["alive"] = false;
+                            deadPeople = home;
+                        }
+                    }
+                }
+                /* Tell people what happened */
+                for(player in players){
+                    if( players[player.toString()]["visited by"] != ""  ){
+                        for(let i=0;i<players[player.toString()]["visited by"].split(" ").length-1;i++){
+
+                            let DMmessage = "";
+                            for(let j=0;j<players[player.toString()]["visited by"].split(" ").length-1;j++){
+                                DMmessage += players[player.toString()]["visited by"].split(" ")[j] + ", ";
+                            }
+                            DMmessage += " visited "+ player.toString() +" last night!";
+                            console.log(players[player.toString()]["visited by"].split(" ")[i].toString(),DMmessage);
+                            if(qc.userById(players[player.toString()]["visited by"].split(" ")[i].toString()) != undefined){
+                                sendToUser( players[player.toString()]["visited by"].split(" ")[i].toString() , DMmessage);
+                            }
+
+                        }
+                    }
+                }
+
+                if(!deadPeople.length){
+                    sendToChat(gameRoom,"Night "+night+" is over. No one died. You have 40 seconds to discuss");
+                } else {
+                    sendToChat(gameRoom,"Night "+night+" is over. "+deadPeople+" died last night. You have 40 seconds to discuss.");
+                }
+                setTimeout(changeGameStateTo3,40000);
+            }
+
+            function changeGameStateTo3(){
+                night++;
+                gameState = 3;
+                sendToChat(gameRoom,"Discussion is over. You have 30 seconds to vote someone up.");
+
+                setTimeout(changeGameStateTo4,30000);
+            }
+
+            window.changeGameStateTo4 = function(){
+                if(!gameRunning){
+                    return;
+                }
+                if(gameState != 4){
+                    //No one was lynched
+                    gameState = 4;
+                    changeGameStateTo1();
+                } else {
+                    //Someone was lynched, check if game is still running
+                    let aliveCount = 0;
+                    for(let i=0;i<Object.keys(players).length;i++){
+                        if(players[Object.keys(players)[i]]["alive"]){
+                            aliveCount++;
+                        } else if(i == criminalIndex){
+                            aliveCount = -10;
+                        }
+                    }
+                    if(aliveCount < 2){
+                        //Game over
+                        let winner = "town";
+                        for(let i=0;i<Object.keys(players).length;i++){
+                            if(players[Object.keys(players)[i]]["alive"]){
+                                if(i==criminalIndex){
+                                    winner = "criminal";
+                                }
+                            }
+                        }
+
+                        if(winner == "town"){
+                            sendToChat(gameRoom,"Game over, the town has won.");
+                            endGame();
+                        } else {
+                            sendToChat(gameRoom,"Game over, "+Object.keys(players)[criminalIndex]+" has won.");
+                            endGame();
+                        }
+
+
+                    } else {
+                        for(let i=0;i<Object.keys(players).length;i++){
+                            players[Object.keys(players)[i]]["visited by"] = "";
+                            players[Object.keys(players)[i]]["visited"] = "";
+                            players[Object.keys(players)[i]]["voted by"] = "";
+                        }
+                        changeGameStateTo1();
+                    }
+                }
+            }
+
+            function endGame(){
+                gameRunning = false;
+                window.players = {};
+                window.gameState = 0;
+                window.criminalIndex = 0;
+                window.night = 1;
+            }
+
+            setTimeout(changeGameStateTo1,15000);
+        }
+        if(gameRunning){
+            if(gameState == 0){
+                /* Adding people into the game */
+                let playerName = messageSender;
+                if(!Object.keys(players).includes(playerName) && playerName != qc.currentUser().value.id()){
+                    players[playerName] = {'alive':true,'visited by':'','visited':'','voted by':''};
+                    console.log(players);
+                    sendToChat(gameRoom,playerName+" added to the game");
+                }
+            } else if(gameState == 1){
+                /* Nothing happens this is night time */
+            } else if(gameState == 2){
+                /* Nothing happens this is discussion time */
+            } else if(gameState == 3){
+                if(Object.keys(players).includes(trueMessage) && Object.keys(players).includes(messageSender) && !players[trueMessage]['voted by'].includes(messageSender)){
+                    sendToChat(gameRoom,messageSender + " voted against "+ trueMessage);
+                    players[trueMessage]['voted by'] += messageSender + ",";
+
+                    /* Minimum votes is majority of alive people */
+                    /* Get number of alive people, and count how many are in */
+                    let minimumVotes = 0;
+                    for(let i=0;i<Object.keys(players).length;i++){
+                        if(players[Object.keys(players)[i]]["alive"]){
+                            minimumVotes++;
+                        }
+                    }
+                    minimumVotes = Math.ceil(minimumVotes/2);
+                    if((players[trueMessage]['voted by'].match(/\,/g) || []).length > minimumVotes){
+                        sendToChat(gameRoom,trueMessage+" has been lynched for conspiracy against the town.");
+                        players[trueMessage]['alive'] = false;
+                        gameState = 4;
+                        changeGameStateTo4();
+                    }
+                }
+            }
+        }
+
     }
 
     if(d == "message-received"){
         let sender = f.messageJson.sender;
         let message = f.messageJson.body;
-        sendToChat(mhchenRoom,sender+" wrote '"+message+"' in my dms");
+        if(gameRunning){
+            if(gameState == 1){
+                if(message != sender){
+                    if(Object.keys(players).includes(message)){
+                        if(players[message]["alive"]){
+                            players[sender]["visited"] = message;
+                        } else {
+                            sendToUser(sender,"That guy is dead. Choose another one.");
+                        }
+                    } else {
+                        sendToUser(sender,"Username isn't playing. Your options are: "+Object.keys(players).toString());
+                    }
+                } else {
+                    sendToUser(sender,"You can't watch yourself -__- try again");
+                }
+            }
+        }
     }
 
     for (g in f) {
@@ -436,8 +806,11 @@ function sendFunFacts(){
     if(sendFacts){
         let fact = facts[Math.floor(Math.random()*facts.length)];
         sendGlobalChat("Fun fact: "+ fact);
-        setTimeout(sendFunFacts,60000);
+        setTimeout(sendFunFacts,300000);
     }
 }
 
-setTimeout(sendFunFacts,60000);
+setTimeout(sendFunFacts,300000);
+
+
+
