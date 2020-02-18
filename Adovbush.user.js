@@ -90,13 +90,6 @@ ultrilliam.addMessageToRoom = function(roomid,message) {
         trueMessage = trueMessage.substring(0,trueMessage.indexOf("</p>"));
         let messageSender = message.substring(message.indexOf('data-poster-id')+16,message.indexOf("data-bind")-2);
 
-        if(roomid == mhchenRoom){
-            if(trueMessage.substring(0,4) == "\\ai "){
-                sendGlobalChat(trueMessage);
-                waitForAeon = true;
-            }
-        }
-
         if (chatelement.hasClass("chat-open")) {
             if (Math.floor(chatcontainerelement[0].scrollHeight) - Math.floor(chatcontainerelement.scrollTop()) - 150 < chatcontainerelement.height() && Math.floor(chatcontainerelement[0].scrollHeight) - Math.floor(chatcontainerelement.scrollTop()) + 150 > chatcontainerelement.height()) {
                 chatcontainerelement.scrollTop(Math.floor(chatcontainerelement[0].scrollHeight));
