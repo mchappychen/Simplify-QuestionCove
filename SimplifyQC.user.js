@@ -1,6 +1,6 @@
 
 // ==UserScript==
-// @name         Simplify QuestionCove
+// @name         For Adovbush
 // @namespace    http://tampermonkey.net/
 // @version      7.0
 // @description  Make question cove simpler
