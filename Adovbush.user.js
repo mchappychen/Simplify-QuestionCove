@@ -117,7 +117,7 @@ questioncove.event = function(d, f) {
 
 ultrilliam.postGroupChat = function(group) {
     let original = $('section[data-group-id="' + group.toLowerCase() + '"]').find('.chat-body').val();
-    let newMsg = "[center][font=Arial Black]";
+    let newMsg = "[font=Arial Black]";
 
     function colorText(str){
         let phase = 0;
