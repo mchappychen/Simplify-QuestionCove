@@ -1,9 +1,9 @@
 
 // ==UserScript==
-// @name         For Adovbush
+// @name         For Justus
 // @namespace    http://tampermonkey.net/
 // @version      7.0
-// @description  Make question cove simpler
+// @description  Question Cove Modifier
 // @author       mhchen
 // @match        https://questioncove.com/study*
 // @grant        none
@@ -33,13 +33,16 @@ function collapseButton(){
 function setSameUsernameColor(){
     for(let i=0;i< document.getElementsByClassName('user-link username').length;i++){
         if(document.getElementsByClassName('user-link username')[i].style.display != "none"){
-            document.getElementsByClassName('user-link username')[i].setAttribute('style','color:blue!important;');
-            if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "adovbush" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "adovbush:"){
+            if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "justus" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "justus:"){
+                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:lime!important;');
+            } else if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "justjm" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "justjm:"){
+                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:blue!important;');
+            } else {
                 document.getElementsByClassName('user-link username')[i].setAttribute('style','color:red!important;');
             }
         }
     }
-    setTimeout(setSameUsernameColor,1000);
+    setTimeout(setSameUsernameColor,600);
 }
 
 setTimeout(collapseButton,5000);
@@ -78,8 +81,6 @@ window.sendToUser = function(name,message){
     })
 }
 
-
-let waitForAeon = false;
 ultrilliam.addMessageToRoom = function(roomid,message) {
     if (message != "") {
         var chatelement = $(".ultrilliamchat[data-room-id='"+roomid+"']");
@@ -115,42 +116,8 @@ questioncove.event = function(d, f) {
     return $(document).trigger(e);
 };
 
-ultrilliam.postGroupChat = function(group) {
-    let original = $('section[data-group-id="' + group.toLowerCase() + '"]').find('.chat-body').val();
-    let newMsg = "[font=Arial Black]";
 
-    function colorText(str){
-        let phase = 0;
-        let center = 128;
-        let width = 127;
-        let frequency = Math.PI*2/str.length;
-        let returnThis = "";
-        for (var i = 0; i < str.length; ++i){
-            let red   = Math.sin(frequency*i+2+phase) * width + center;
-            let green = Math.sin(frequency*i+0+phase) * width + center;
-            let blue  = Math.sin(frequency*i+4+phase) * width + center;
-            returnThis += '[color=' + '#' + byte2Hex(red) + byte2Hex(green) + byte2Hex(blue) + ']' + str.substr(i,1) + '[/color]';
-        }
-        return returnThis;
-    }
-    function byte2Hex(n){
-        return String("0123456789ABCDEF".substr((n >> 4) & 0x0F,1)) + "0123456789ABCDEF".substr(n & 0x0F,1);
-    }
 
-    newMsg += colorText(original);
-    console.log(newMsg);
 
-    $.ajax({
-        type: "POST",
-        url: "/ajax_request/",
-        xhrFields: {
-            withCredentials: true
-        },
-        data: {
-            "chat_post": newMsg,
-            "group_id": group
-        }
-    }).done(function() {
-        ga('send', 'event', 'Chat', 'Sent', group);
-    });
-}
+
+
