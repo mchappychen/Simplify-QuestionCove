@@ -1,6 +1,6 @@
 
 // ==UserScript==
-// @name         For Lionblaze15
+// @name         For Djpup
 // @namespace    http://tampermonkey.net/
 // @version      7.0
 // @description  QuestionCove
@@ -33,10 +33,12 @@ function collapseButton(){
 function setSameUsernameColor(){
     for(let i=0;i< document.getElementsByClassName('user-link username').length;i++){
         if(document.getElementsByClassName('user-link username')[i].style.display != "none"){
-            if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "lionblaze15" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "lionblaze15:"){
+            if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "xxderpypugxx" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "xxderpypugxx:"){
                 document.getElementsByClassName('user-link username')[i].setAttribute('style','color:blue!important;');
-            } else if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "ph03n1x" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "ph03n1x:"){
+            } else if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "lionblaze15" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "lionblaze15:"){
                 document.getElementsByClassName('user-link username')[i].setAttribute('style','color:magenta!important;');
+            } else if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "djpup" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "djpup:"){
+                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:gold!important;');
             }
         }
     }
