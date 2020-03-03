@@ -1,9 +1,9 @@
 
 // ==UserScript==
-// @name         For Justus
+// @name         For Lionblaze15
 // @namespace    http://tampermonkey.net/
 // @version      7.0
-// @description  Question Cove Modifier
+// @description  QuestionCove
 // @author       mhchen
 // @match        https://questioncove.com/study*
 // @grant        none
@@ -33,12 +33,10 @@ function collapseButton(){
 function setSameUsernameColor(){
     for(let i=0;i< document.getElementsByClassName('user-link username').length;i++){
         if(document.getElementsByClassName('user-link username')[i].style.display != "none"){
-            if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "justus" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "justus:"){
-                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:lime!important;');
-            } else if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "justjm" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "justjm:"){
+            if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "lionblaze15" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "lionblaze15:"){
                 document.getElementsByClassName('user-link username')[i].setAttribute('style','color:blue!important;');
-            } else {
-                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:red!important;');
+            } else if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "ph03n1x" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "ph03n1x:"){
+                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:magenta!important;');
             }
         }
     }
@@ -117,7 +115,21 @@ questioncove.event = function(d, f) {
 };
 
 
+ultrilliam.postGroupChat = function(group) {
+    let original = $('section[data-group-id="' + group.toLowerCase() + '"]').find('.chat-body').val();
+    let newMsg = "[font=Arial Black]";
+    /*if(original.substring(0,1)=="!"){
+        newMsg = "[quote='"+original.substring(1,original.indexOf(",")) + "'][font=Arial Black]";
+        original = original.substring(original.indexOf(",")+2,original.length);
+    }*/
+    function colorText(str){let phase = 0;let center = 128;let width = 127;let frequency = Math.PI*2/str.length;let returnThis = "";for (var i = 0; i < str.length; ++i){let red   = Math.sin(frequency*i+2+phase) * width + center;let green = Math.sin(frequency*i+0+phase) * width + center;let blue  = Math.sin(frequency*i+4+phase) * width + center;returnThis += '[color=' + '#' + byte2Hex(red) + byte2Hex(green) + byte2Hex(blue) + ']' + str.substr(i,1) + '[/color]';}return returnThis;}
+    function byte2Hex(n){return String("0123456789ABCDEF".substr((n >> 4) & 0x0F,1)) + "0123456789ABCDEF".substr(n & 0x0F,1);}
 
+    newMsg += colorText(original);
+    console.log(newMsg);
+
+    $.ajax({ type: "POST", url: "/ajax_request/", xhrFields: {withCredentials: true},data: {"chat_post": newMsg,"group_id": group}}).done(function() {ga('send', 'event', 'Chat', 'Sent', group);});
+}
 
 
 
