@@ -1,6 +1,6 @@
 
 // ==UserScript==
-// @name         For Djpup
+// @name         For Howie
 // @namespace    http://tampermonkey.net/
 // @version      7.0
 // @description  QuestionCove
@@ -46,7 +46,6 @@ function setSameUsernameColor(){
 }
 
 setTimeout(collapseButton,5000);
-setTimeout(setSameUsernameColor,2000);
 
 
 window.sendGlobalChat = function(x){
