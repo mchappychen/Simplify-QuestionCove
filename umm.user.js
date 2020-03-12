@@ -1,6 +1,6 @@
 
 // ==UserScript==
-// @name         For Razor
+// @name         For umm
 // @namespace    http://tampermonkey.net/
 // @version      7.0
 // @description  QuestionCove
