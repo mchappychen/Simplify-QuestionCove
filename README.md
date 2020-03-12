@@ -1,8 +1,8 @@
-# Simplify-QuestionCove
+# Hello umm, I hope Razor sent you here. Just follow these instructions below:
 
 How to install:
-1. Get the tampermonkey extension (this extension runs your own javascript on websites)
-2. Click on simplifyQC.js
+1. Get the tampermonkey chrome extension (or tampermonkey firefox addon)
+2. Click on umm.user.js
 3. Click on the 'RAW' button top-right
 4. A popup in tampermonkey will appear, Press Install
 5. Refresh QC and see if it changes
