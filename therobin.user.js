@@ -1,6 +1,6 @@
 
 // ==UserScript==
-// @name         For umm
+// @name         For TheRobin
 // @namespace    http://tampermonkey.net/
 // @version      7.0
 // @description  QuestionCove
