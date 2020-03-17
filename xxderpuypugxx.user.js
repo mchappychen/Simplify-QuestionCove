@@ -1,6 +1,6 @@
 
 // ==UserScript==
-// @name         For TheRobin
+// @name         For xxDerpyPugxx
 // @namespace    http://tampermonkey.net/
 // @version      7.0
 // @description  QuestionCove
@@ -35,10 +35,6 @@ function setSameUsernameColor(){
         if(document.getElementsByClassName('user-link username')[i].style.display != "none"){
             if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "xxderpypugxx" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "xxderpypugxx:"){
                 document.getElementsByClassName('user-link username')[i].setAttribute('style','color:blue!important;');
-            } else if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "lionblaze15" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "lionblaze15:"){
-                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:magenta!important;');
-            } else if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "djpup" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "djpup:"){
-                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:gold!important;');
             }
         }
     }
