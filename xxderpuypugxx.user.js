@@ -34,7 +34,7 @@ function setSameUsernameColor(){
     for(let i=0;i< document.getElementsByClassName('user-link username').length;i++){
         if(document.getElementsByClassName('user-link username')[i].style.display != "none"){
             if(document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "xxderpypugxx" || document.getElementsByClassName('user-link username')[i].innerText.toLowerCase() == "xxderpypugxx:"){
-                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:blue!important;');
+                document.getElementsByClassName('user-link username')[i].setAttribute('style','color:red!important;');
             }
         }
     }
@@ -42,6 +42,7 @@ function setSameUsernameColor(){
 }
 
 setTimeout(collapseButton,5000);
+setTimeout(setSameUsernameColor,5000);
 
 
 window.sendGlobalChat = function(x){
