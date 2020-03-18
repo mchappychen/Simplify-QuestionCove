@@ -3,12 +3,14 @@ window.unSubbed = [];
 questioncove.event = function(d, f) {
     var e = $.Event(d);
     if(e.type == "insert-notification"){
-       console.log("data",f);
+       console.log("data",f.notificationJson);
        if(!unSubbed.includes(f.notificationJson.id)){
             for (g in f) {
                 e[g] = f[g]
             }
             return $(document).trigger(e)
+       } else {
+           console.log("no notif pls");
        }
     } else {
         for (g in f) {
