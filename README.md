@@ -1,4 +1,4 @@
-# Hello umm, I hope Razor sent you here. Just follow these instructions below:
+# Modifies questioncove.com to my own style
 
 How to install:
 1. Get the tampermonkey chrome extension (or tampermonkey firefox addon)
